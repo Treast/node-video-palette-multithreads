@@ -1,0 +1,19 @@
+{
+  "name": "node-multithreads",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.17",
+    "canvas": "^2.2.0",
+    "curlew.js": "^1.0.1",
+    "eider.js": "^1.0.0",
+    "fluent-ffmpeg": "^2.1.2"
+  }
+}
