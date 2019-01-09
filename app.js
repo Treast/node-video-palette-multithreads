@@ -56,18 +56,20 @@ const createWorker = () => {
 };
 
 const handleQuantification = () => {
-  console.timeEnd('Timer');
+  return new Promise(resolve => {
+    console.timeEnd('Timer');
 
-  const quantification = new Quantification(results, 8)
-  quantification.generate()
+    const quantification = new Quantification(results, 8)
+    quantification.generate()
 
-  quantification.clusters.sort((a, b) => {
-    return b.clusterData.length - a.clusterData.length;
+    quantification.clusters.sort((a, b) => {
+      return b.clusterData.length - a.clusterData.length;
+    })
+
+    quantification.clusters.map(cluster => console.log(cluster.getHex()))
+
+    return generatePostImage(quantification.clusters)
   })
-
-  quantification.clusters.map(cluster => console.log(cluster.getHex()))
-  
-  return generatePostImage(quantification.clusters)
 };
 
 const generatePostImage = clusters => {
@@ -98,12 +100,20 @@ const generatePostImage = clusters => {
 const getScreenshotsFromVideo = video => {
   return new Promise((resolve, reject) => {
     ffmpeg(path.resolve(__dirname, video))
-      .outputOptions(['-vf', `fps=${args.fps}`])
-      .output(`${args.directory}/img%03d.jpg`)
+      .output(`video_${args.width}x${args.height}.mp4`)
       .size(`${args.width}x?`)
-      .on('end', resolve)
-      .on('error', reject)
-      .run();
+      .aspect('16:9')
+      .on('end', () => {
+        ffmpeg(path.resolve(__dirname, `video_${args.width}x${args.height}.mp4`))
+          .output(`${args.directory}/img%03d.jpg`)
+          .size(`${args.width}x?`)
+          .aspect('16:9')
+          .outputOptions(['-vf', `fps=${args.fps}`])
+          .on('end', resolve)
+          .on('error', reject)
+          .run();
+        })
+      .run()
   });
 };
 
@@ -122,7 +132,7 @@ const processScreenshots = () => {
       });
 
       Promise.all(promises).then(() => {
-          handleQuantification()
+          return handleQuantification()
       });
     });
   });
