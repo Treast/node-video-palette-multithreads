@@ -4,7 +4,7 @@ const { createCanvas, loadImage } = require('canvas');
 const path = require('path')
 
 const processImage = (img) => {
-    console.log(`Worker ${process.pid} with ${img}`)
+    //console.log(`Worker ${process.pid} with ${img}`)
 
     loadImage(path.resolve(__dirname, 'images', img))
         .then(image => {
@@ -19,7 +19,7 @@ const processImage = (img) => {
             const pixels = ctx.getImageData(0, 0, WIDTH, HEIGHT).data;
             const data = [];
 
-            for (let i = 0; i < pixels.length; i += 4 * 20) {
+            for (let i = 0; i < pixels.length; i += 4 * args.quality) {
                 data.push([pixels[i], pixels[i + 1], pixels[i + 2]]);
             }
 
